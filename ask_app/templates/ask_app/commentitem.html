@@ -1,0 +1,13 @@
+
+{% for comment in comments %}
+<div class="item">
+	<div class="author">
+		<a href="">
+			<img src="media/{{ answer.author.image }}">
+			{{ answer.author.username }}
+		</a>
+	</div>
+	{{ comment.content }}
+</div>
+{% endfor %}
+

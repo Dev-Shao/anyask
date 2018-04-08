@@ -1,0 +1,37 @@
+		{% for answer in answers %}
+		<div class="block-m">
+			<div class="topic">
+				话题：
+				{% for topic in answer.question.topic.all %}
+				<a href="">{{ topic.title }} </a>
+				{% endfor %}
+			</div>
+			<div class="author">
+				<a href="{% url 'user_app:user' answer.author.id %}">
+					<img src="media/{{ answer.author.image }}">
+					{{ answer.author.username }}
+				</a>
+				{{ answer.author.brief }}
+			</div>
+			<div class="title">
+				<a href="{% url 'ask_app:question' answer.question.id %}">{{ answer.question.title }}</a>
+			</div>
+			<div class="content">
+			{{ answer.preview }}
+			<a href="{% url 'ask_app:answer' answer.question.id answer.id %}">阅读全文</a>
+			</div>
+			<div class="infobar">
+				<a class="btn btn-md btn-info" vote="{% url 'ask_app:vote' answer.id %}?op=up"><span class="fui-triangle-up"></span><span voteupCount>{{ answer.voteup }}</span></a>
+				<a class="btn btn-md btn-info" vote="{% url 'ask_app:vote' answer.id %}?op=down"><span class="fui-triangle-down"></span></a>
+				<a class="info-link" href="{% url 'ask_app:answer' answer.question.id answer.id %}"><span class="fui-bubble"></span> {{ answer.comment.all.count }}条评论</a>
+				<a class="info-link" href="" favour="{% url 'ask_app:favour' answer.id %}">
+				{% if answer in user.favour_answer.all %}
+					已收藏  
+				{% else %}
+				<span class="fui-star-2"></span>收藏
+				{% endif %}
+				</a>
+			</div>
+		</div>
+		{% endfor %}
+		

@@ -1,0 +1,106 @@
+
+	.block-m{
+		margin: 15px 0px 15px 0px;
+		padding: 20px;
+		background-color: #ECF0F1;
+	
+	}
+	.blankline{
+		margin-top: 55px;
+	}
+	.block-m .topic{
+		font-size: 15px;
+		color:#959AB1;
+	}
+	.block-m .title{
+		margin: 6px 0px 0px 0px;
+		font-size: 21px;
+		color: #2C3E50;
+	}
+	.block-m .title a{
+		color: #2C3E50;
+	}
+	.block-m .title a:hover{
+		color: #2980B9;
+	}
+	.block-m .author{
+		font-size: 15px;
+	}
+	.block-m .author img{
+		
+		width: 24px;
+		height: 24px;
+		margin-right: 6px;
+	}
+	.block-m .image{
+		width: 200px;
+		height: 200px;
+	}
+	.block-m .content{
+		margin-top: 10px;
+		font-size: 16px;
+	}
+	.block-m .infobar{
+		margin-top: 15px;
+	}
+	.info-list .aa{
+		display:block;
+	}
+	.info-list a{
+		font-size: 16px;
+		display:block;
+	}
+	.info-link{
+		font-size: 15px;
+		margin-left: 25px;
+	}
+	.btn-md{
+		padding: 5px 7px;
+		font-size: 14px;
+	}
+	.icon-item{
+		margin: 16px 0px 16px 0px;
+		text-align: center;
+	}
+	.icon-item img{
+		width: 32px;
+		height: auto;
+	}
+	.icon-item-title{
+		margin: 10px 0px 10px 0px;
+		font-size: 20px;
+	}
+	.comment-title{
+		font-size: 18px;
+		text-align: center;
+		border-bottom: dashed 2px #BDC3C7;
+		padding-bottom: 12px;
+		margin-bottom: 10px;
+
+	}
+	.comment-item{
+		border-bottom: solid 1px #BDC3C7;
+		margin-bottom: 10px;
+	}
+	.footer{
+		margin-top: 20px;
+		padding-top: 8px;
+		color: #95A5A6;
+		background-color: #FFF;
+		border-top: dashed 2px #7F8C8D;
+		font-size: 16px;
+	}
+	.footer p{
+		font-size: 14px;
+	}
+	.footer a {
+		color: #7F8C8D;
+	}
+	.footer a:hover {
+		color: #1ABC9C;
+	}
+
+
+
+
+

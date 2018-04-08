@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Anyask</title>
+	
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<!--link href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet"-->
+	
+	{% load static %}
+	<!--link rel="stylesheet" href="{% static 'ask_app/css/bootstrap.min.css' %}"-->
+	<link rel="stylesheet" href="{% static 'ask_app/css/flat-ui.min.css' %}">
+	<link rel="stylesheet" href="{% static 'ask_app/css/shao.css' %}">
+	<!--script type="text/javascript" src="{% static 'ask_app/js/jquery.min.js' %}"></script-->
+	<script type="text/javascript" src="{% static 'ask_app/js/flat-ui.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'ask_app/js/application.js' %}"></script>
+	<link rel="shortcut icon" href="/media/favicon.ico">
+</head>
+<body>
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content" style="background-color: #ECF0F1;">
+	      <div class="text-center">
+	      	<h2><a>Anyask</a></h2>
+	      	<p>与世界分享你编的故事，和我们一起来装逼</p>
+	      </div>
+	      <div class="text-center" id="loginInfo"></div>
+	      <div class="modal-body">
+	        <form class="login-form" action="{% url 'user_app:login_' %}" method="post" id="login_form">
+						<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' id="csrf"/>
+			      <div class="form-group">
+			        <input type="text" class="form-control login-field" placeholder="用户名" required id="login-name" name="username"/>
+			        <label class="login-field-icon fui-user" for="login-name"></label> 
+			      </div>
+						<div class="form-group">
+			        <input type="password" class="form-control login-field" placeholder="密码" required id="login-pass" name="password"/>
+			        <label class="login-field-icon fui-lock" for="login-pass"></label>
+			      </div>
+						<button class="btn btn-primary btn-lg btn-block" type="" id="loginButton">登录</button>
+			      <a class="login-link" href="#" >忘记密码?</a>
+			    </form>
+	      </div>
+	      <div class="modal-footer">
+	      	<a class="btn btn-primary" href="">注册</a>
+	        <button type="button" class="btn btn-inverse" data-dismiss="modal">取消</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<!-- brand and toggle -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse-1">
+					<span class="sr-only"></span>					
+				</button>
+				<a class="navbar-brand" href="{% url 'ask_app:index' %}">Anyask</a>
+			</div>
+			<!-- toggling -->
+			<div class="collapse navbar-collapse" id="collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="{% url 'ask_app:index' %}">首页</a></li>
+					<li><a href="{% url 'ask_app:questions' %}">发现</a></li>
+					<li><a href="">话题</a></li>
+				</ul>
+				<form class="navbar-form navbar-left" action="{% url 'ask_app:search' %}" role="search">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" required type="search" name="search" placeholder="Search">
+              <span class="input-group-btn">
+                <button type="submit" class="btn"><span class="fui-search"></span></button>
+              </span>
+            </div>
+          </div>
+        </form>
+        {% if not user.is_authenticated %}
+        <div class="navbar-right">
+        	<a class="btn navbar-btn" href="{% url 'user_app:login' %}">登录</a>
+    	    <a class="btn navbar-btn" href="{% url 'user_app:login' %}">注册</a>
+        </div>
+        {% else %}
+        <a class="btn btn-primary navbar-btn" type="button" href="{% url 'ask_app:ask' %}">提问</a>
+        <ul class="nav navbar-nav navbar-right">
+        	<li class="dropdown">
+        		<a class="dorpdown-toggle" data-toggle="dropdown">
+        			<span class="fui-mail" aria-hidden="true"></span><span class="navbar-unread">5</span>
+        		</a>
+        		<ul class="dropdown-menu">
+        			<li><a href="">新消息1</a></li>
+        			<li><a href="">新消息2</a></li>
+        			<li class="divider"></li>
+        			<li class="text-center"><a href="">查看全部消息</a></li>
+        		</ul>
+        	</li>
+        	<li class="dropdown">
+ 						<a class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}</a>
+ 						<ul class="dropdown-menu">
+ 							<li><a href="{% url 'user_app:user' user.id %}"><span class="fui-user"> </span>我的主页</a></li>
+ 							<li><a href=""><span class="fui-gear"> </span>设置</a></li>
+ 							<li><a href="{% url 'user_app:logout' %}"><span class="fui-power"> </span>退出</a></li>
+ 						</ul>     		
+        	</li>
+        </ul>
+        {% endif %}
+			</div>
+		</div>	
+	</nav>
+	<div class="">
+		{% block content%}
+		{% endblock content %}
+	</div>
+</body>
+</html>

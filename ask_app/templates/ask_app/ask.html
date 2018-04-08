@@ -1,0 +1,24 @@
+{% extends 'ask_app/base.html' %}
+{% block content %}
+<br><br>
+<div class="container">
+	<h4>写下你的问题</h4>
+	<p>描述精确的问题更容易得到解答</p>
+	<form class="form" method="post" action="{% url 'ask_app:ask' %}">
+		{% csrf_token %}
+		<div class="form-group">
+			<label>问题标题：</label>
+			<input class="form-control"  type="text" name="title" required id="title">
+		</div>
+		<div class="form-group">
+			<label>问题描述：</label>
+			<textarea class="form-control" name="content" rows="4"></textarea>
+		</div>
+		<div class="form-group">
+			<label>话题：</label>
+			<input class="form-control" type="" name="topic">
+		</div>
+		<button class="btn btn-primary" type="submit">提交问题</button>
+	</form>
+</div>
+{% endblock content %}

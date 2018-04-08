@@ -1,0 +1,31 @@
+{% extends "ask_app/base.html" %}
+{% block content %}
+<div class="container">
+	<div class="blankline">
+	</div>
+	<div class="row">
+		<div class="col-md-8" >
+			<div class="block-m">
+				<div class="title">
+					’{{ kw }}‘  相关问题
+				</div>
+			</div>
+			<div class="block-m">
+			{% for question in questions %}
+				<div class="title">
+					<a href="{% url 'ask_app:question' question.id %}">{{ question.title }}</a>
+				</div>
+				<div class="infobar">
+					<a class="btn btn-info" follow="{% url 'ask_app:follow' %}?object=question;id={{question.id}}">{% if question in user.follow_question.all %}已关注{% else %}关注问题{% endif %}</a>&nbsp;&nbsp;
+					<a href="{% url 'ask_app:question' question.id %}">共有{{ question.answer.count }}个回答</a>
+				</div>
+			{% endfor %}
+			</div>
+		</div>
+		<div class="col-md-4">
+		</div>
+	</div>
+</div>
+{% load static %}
+<script type="text/javascript" src="{% static 'ask_app/js/shao.js' %}"></script>
+{% endblock content %}

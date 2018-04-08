@@ -1,0 +1,9 @@
+<br>
+{% for question in questions %}
+	<div>
+		<div class="title">
+			<a href="{% url 'ask_app:question' question.id %}">{{ question.title }}</a>
+		</div>
+		<small>{{ question.datetime }}</small> 
+	</div>
+{% endfor %}

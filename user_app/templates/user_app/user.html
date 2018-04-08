@@ -1,0 +1,101 @@
+{% extends 'ask_app/base.html' %}
+
+{% block content %}
+<div class="container">
+<div class="blankline"><br></div>
+	<div class="block-m">
+		<div class="row">
+			<div class="col-md-3">
+				<img src="/media/{{ user.image }}" class="image">
+			</div>
+			<div class="col-md-9">
+				<h4>{{ user.username }}</h4>
+				<p>{{ user.brief }}</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8">
+			<div class="block-m">
+				<div class="btn-group">
+          <button type="button" class="btn btn-inverse" id="activities">动态</button>
+          <button type="button" class="btn btn-inverse" id="answers">回答 {{user.answer.count}}</button>
+          <button type="button" class="btn btn-inverse" id="questions">提问 {{user.question.count}}</button>
+          <button type="button" class="btn btn-inverse">更多</button>
+      	</div>
+				<div>
+				<ul class="list-group" id="items">
+				  {% for vote in votes %}
+						<div class="block-m">
+							赞同了回答 <small> --{{ vote.date }} </small> 
+							<div class="title">
+								<a href="{% url 'ask_app:question' vote.answer.question.id %}">{{ vote.answer.question.title }}</a>
+							</div>
+							<div class="author">
+								<a href="{% url 'user_app:user' vote.answer.author.id %}">
+									<img src="/media/{{ vote.answer.author.image }}">
+									{{ vote.answer.author.username }}
+								</a>
+								{{ vote.answer.author.brief }}
+							</div>
+							
+							<div class="content">
+								{{ vote.answer.preview }}
+								<a href="{% url 'ask_app:answer' vote.answer.question.id vote.answer.id %}">阅读全文</a>
+							</div>
+							<div class="infobar">
+								<a class="btn btn-md btn-info" vote="{% url 'ask_app:vote' vote.answer.id %}?op=up"><span class="fui-triangle-up"></span><span voteupCount>{{ vote.answer.voteup }}</span></a>
+								<a class="btn btn-md btn-info" vote="{% url 'ask_app:vote' vote.answer.id %}?op=down"><span class="fui-triangle-down"></span></a>
+								<a class="info-link" href="{% url 'ask_app:answer' vote.answer.question.id vote.answer.id %}" %}"><span class="fui-bubble"></span> {{ vote.answer.comment.all.count }}条评论</a>
+								<a class="info-link" href="" favour="{% url 'ask_app:favour' vote.answer.id %}">
+								{% if answer in user.favour_answer.all %}
+									已收藏  
+								{% else %}
+								<span class="fui-star-2"></span>收藏
+								{% endif %}
+								</a>
+							</div>
+						</div>
+					{% endfor %}
+				</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="block-m">
+				<div class="info-list">
+					<a class="list-item" href=""><span class="fui-star-2"> </span>我的收藏</a>
+					<a class="list-item" href=""><span class="fui-document"> </span>我关注的问题</a>
+					<a class="list-item" href=""><span class="fui-user"> </span>我关注的用户</a>
+					<a class="list-item" href=""><span class="fui-chat"> </span>我关注的话题</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<script>
+	$(document).ready(function(){
+		$('#activities').click(function(){
+			$.get("{% url 'user_app:activities' user.id %}",function(data,status){
+				$("#items").html(data);
+			});
+		});
+
+		$("#answers").click(function(){
+			$.get("{% url 'user_app:answers' user.id %}",function(data,status){
+				$("#items").html(data);
+			});
+		});
+
+		$('#questions').click(function(){
+			$.get("{% url 'user_app:questions' user.id %}",function(data,status){
+				$("#items").html(data);
+			});
+		});
+
+	});
+	
+</script>
+{% endblock content %}
+
