@@ -25,6 +25,7 @@ class Question(models.Model):
 #	visitor = models.ManyToManyField('user_app.AnyaskUser',related_name='visit_question',
 #									blank=True
 #									)
+	is_anonymity = models.BooleanField(default=False)
 	datetime = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):

@@ -146,7 +146,7 @@ def ask(request):
 		form = QuestionForm(request.POST)
 		if form.is_valid():
 			new_question = form.save(commit=False)
-			new_question.author = request.user
+			new_question.asker = request.user
 			new_question.save()
 			return HttpResponseRedirect(reverse('ask_app:question',args=(str)(new_question.id)))
 	context = {}

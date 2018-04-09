@@ -18,7 +18,7 @@ def login_view(request):
 		user = authenticate(username=username,password=password)
 		if user and user.is_active:
 			login(request,user)
-			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+			return HttpResponseRedirect('/')
 	context = {}
 	return render(request,'user_app/login.html',context)
 

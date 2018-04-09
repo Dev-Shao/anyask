@@ -30,7 +30,13 @@
 			<div class="col-md-4">
 				<div><br></div>
 				<div><br></div>
-				<div>提问人：{% if question.author %}{{ question.author}}{% else %}匿名用户{% endif %}</div>
+				<div>提问人：
+				{% if question.is_anonymity %}
+					匿名用户
+				{% else %}
+				<a href="{% url 'user_app:user' question.asker.id %}">{{ question.asker.username }}</a> 
+				{% endif %}
+				</div>
 				<div>被浏览：{{ question.visi_count }}</div>
 				<div>最后编辑时间：{{ question.datetime }}</div>
 			</div>
@@ -97,9 +103,7 @@
 				<div><br></div>
 		</div>
 		<div class="col-md-4">
-			<div class="block-m">
-				fdf
-			</div>
+			
 		</div>
 	</div>
 </div>

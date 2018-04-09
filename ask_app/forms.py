@@ -5,7 +5,7 @@ from .models import Question,Answer
 class QuestionForm(forms.ModelForm):
 	class Meta:
 		model = Question
-		fields = ['title','content']
+		fields = ['title','content','is_anonymity']
 
 class AnswerForm(forms.ModelForm):
 	class Meta:
