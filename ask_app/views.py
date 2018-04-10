@@ -14,7 +14,6 @@ import json
 def is_login(func):
 	def g(*args,**kw):
 		if not args[0].user.is_authenticated():
-			print('it not login')
 			return HttpResponse(json.dumps({'result':'unlogin','data':''}))
 		return func(*args,**kw)
 	return g
@@ -143,10 +142,20 @@ def answer_item(request,question_id,answer_id):
 @login_required
 def ask(request):
 	if request.method == 'POST':
+		topic = request.POST.get('topic')
 		form = QuestionForm(request.POST)
 		if form.is_valid():
 			new_question = form.save(commit=False)
 			new_question.asker = request.user
+			new_question.save()
+			topics = Topic.objects.filter(title__icontains=topic)
+			if topics:
+				question_topic = topics[0]
+				new_question.topic.add(question_topic)
+			else:
+				question_topic = Topic(title=topic)
+				question_topic.save()
+				new_question.topic.add(question_topic)
 			new_question.save()
 			return HttpResponseRedirect(reverse('ask_app:question',args=(str)(new_question.id)))
 	context = {}
@@ -165,7 +174,7 @@ def answer(request,question_id):
 	context = {'question':question}
 	return render(request,'ask_app/answer.html',context)
 
-
+@login_required
 def comments(request,question_id,answer_id):
 	# url /question/(question_id)/answer/(answer_id)/comments/
 

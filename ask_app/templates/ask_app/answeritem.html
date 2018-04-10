@@ -3,7 +3,7 @@
 			<div class="topic">
 				话题：
 				{% for topic in answer.question.topic.all %}
-				<a href="">{{ topic.title }} </a>
+				<a href="{% url 'ask_app:topic' topic.id %}">{{ topic.title }} </a>
 				{% endfor %}
 			</div>
 			<div class="author">

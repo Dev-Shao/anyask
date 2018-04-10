@@ -2,3 +2,6 @@
 .DS_Store
 db.sqlite3
 ask_app/static
+ask_app/migrations
+user_app/migrations
+profile_app/migrations

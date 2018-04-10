@@ -13,7 +13,7 @@
 			<div class="col-md-8">
 				<div class="topic">
 					{% for topic in question.topic.all %}
-					<a href="">{{ topic.title }}</a>
+					<a href="{% url 'ask_app:topic' topic.id %}">{{ topic.title }}</a>
 					{% endfor %}
 				</div>
 				<div class="title">

@@ -12,7 +12,7 @@
 			<div class="col-md-8">
 				<div class="topic">
 					{% for topic in question.topic.all %}
-					<a href="">{{ topic.title }}</a>
+					<a href="{% url 'ask_app:topic' topic.id %}">{{ topic.title }}</a>
 					{% endfor %}
 				</div>
 				<div class="title">
@@ -71,7 +71,7 @@
 					  </a>,{{ answer.author.brief }}
 					</div>
 					<div class="content">
-					{{ answer.content }}
+					<p>{{ answer.content|safe }}</p>
 					</div>
 					<div class="infobar">
 						<a class="btn btn-md btn-info" vote="{% url 'ask_app:vote' answer.id %}?op=up"><span class="fui-triangle-up"></span><span voteupCount>{{ answer.voteup }}</span></a>
@@ -117,20 +117,7 @@
 		</div>
 	</div>
 </div>
-<!--
-<script>
-	$("#putButton").click(function(){
-		var content = $("#comment-content").val();
-		var data = {
-			'csrfmiddlewaretoken':'{{ csrf_token }}',
-			'content':content,
-		};
-		$.post("{% url 'ask_app:comments' question.id answer.id %}",data,function(data,status){
-			$("#commentList").append(data);
-		});
-	});
-</script>
--->
+
 {% load static %}
 <script type="text/javascript" src="{% static 'ask_app/js/shao.js' %}"></script>
 
