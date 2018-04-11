@@ -52,10 +52,10 @@
 					</div>
 					<br>
 					<div>
-						<form class="form" action="{% url 'ask_app:answers' question.id %}" method="post">
+						<form class="form" action="{% url 'ask_app:answers' question.id %}" method="post" id="answer-form">
 							{% csrf_token %}
 							<div class="form-group">
-								<textarea class="form-control" rows="6" name="content" required id="content"></textarea>
+								<textarea class="form-control" rows="6" name="content" required id="answer-content"></textarea>
 							</div>
 							<button class="btn btn-primary" type="submit" >提交回答</button>
 						</form>

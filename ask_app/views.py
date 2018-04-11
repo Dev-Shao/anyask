@@ -90,7 +90,7 @@ def question_item(request,question_id):
 	return render(request,'ask_app/question.html',context)	
 
 
-
+@login_required
 def answers(request,question_id):
 	# url /question/(question_id)/answers/
 
