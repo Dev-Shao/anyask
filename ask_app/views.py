@@ -1,20 +1,26 @@
+import json
+
+from user_app.models import AnyaskUser
+from profile_app.models import Vote
+from .models import Topic,Question,Answer,Comment
+from .forms import QuestionForm,AnswerForm
+
+from django.template import loader
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-from user_app.models import AnyaskUser
-from profile_app.models import Vote
-from .models import Topic,Question,Answer,Comment
-from .forms import QuestionForm,AnswerForm
-import json
+
+
+
 
 # Create your views here.
 def is_login(func):
 	def g(*args,**kw):
 		if not args[0].user.is_authenticated():
-			return HttpResponse(json.dumps({'result':'unlogin','data':''}))
+			return HttpResponse(json.dumps({'result':'unlogin','content':''}))
 		return func(*args,**kw)
 	return g
 
@@ -32,32 +38,12 @@ def index(request):
 	except PageNotAnInteger:
 		answers = paginator.page(1)
 	except EmptyPage:
-		return HttpResponse()
+		data = {"result":"empty","content":""}
+		return HttpResponse(json.dumps(data))
 
 	context = {'answers':answers}
 	return render(request,'ask_app/answeritem.html',context)
 
-'''
-def question(request,question_id):
-	question = Question.objects.get(pk=question_id)
-
-	answer_list = question.answer_set.all().order_by('-voteup')
-	paginator = Paginator(answer_list,5)
-	page = request.GET.get('page',False)
-	if not page:
-		answers = paginator.page(1)
-		context = {'question':question,'answers':answers}
-		return render(request,'ask_app/question.html',context)
-	try:
-		answers = paginator.page(page)
-	except PageNotAnInteger:
-		answers = paginator.page(1)
-	except EmptyPage:
-		return HttpResponse()
-		
-	context = {'answers':answers}
-	return render(request,'ask_app/item.html',context)
-'''
 
 def questions(request):
 	questions = Question.objects.all().order_by('-datetime')
@@ -90,7 +76,7 @@ def question_item(request,question_id):
 	return render(request,'ask_app/question.html',context)	
 
 
-@login_required
+
 def answers(request,question_id):
 	# url /question/(question_id)/answers/
 
@@ -105,11 +91,14 @@ def answers(request,question_id):
 		except PageNotAnInteger:
 			answers = paginator.page(1)
 		except EmptyPage:
-			return HttpResponse()
+			data = {'result':'empty','content':''}
+			return HttpResponse(json.dumps(data))
 		context = {'answers':answers}
 		return render(request,'ask_app/item.html',context)
 
 	elif request.method == 'POST':
+		if not request.user.is_authenticated():
+			return HttpResponseRedirect(reverse('user_app:login'));
 		content = request.POST.get('content')
 		if content.strip():
 			new_answer = Answer(question=question,author=request.user,content=content)
@@ -120,7 +109,6 @@ def answers(request,question_id):
 def answer_item(request,question_id,answer_id):
 	# url /question/(question_id)/answer/(answer_id)/
 
-#	question = Question.objects.get(pk=question_id)
 	answer = Answer.objects.get(pk=answer_id)
 	question = answer.question
 	if request.method == "GET":
@@ -131,6 +119,8 @@ def answer_item(request,question_id,answer_id):
 			Answer.objects.remove(answer)
 			return HttpResponse()
 		else:
+			if not request.user.is_authenticated():
+				return HttpResponseRedirect(reverse('user_app:login'));
 			content = request.POST.get('content')
 			answer.content = content
 			answer.save()
@@ -162,25 +152,14 @@ def ask(request):
 	return render(request,'ask_app/ask.html',context)
 
 
-@login_required
-def answer(request,question_id):
-	question = Question.objects.get(pk=question_id)
-	if request.method == 'POST':
-		content = request.POST.get('content')
-		if content.strip():
-			new_answer = Answer(question=question,author=request.user,content=content)
-			new_answer.save()
-			return HttpResponseRedirect(reverse('ask_app:question',args=question_id))
-	context = {'question':question}
-	return render(request,'ask_app/answer.html',context)
-
-@login_required
 def comments(request,question_id,answer_id):
 	# url /question/(question_id)/answer/(answer_id)/comments/
 
 	answer = Answer.objects.get(pk=answer_id)
 	comments = {}
 	if request.method == 'POST':
+		if not request.user.is_authenticated():
+				return HttpResponseRedirect(reverse('user_app:login'));
 		content = request.POST.get('content')
 		if content and content.strip():
 			new_comment = Comment(author=request.user,content=content,answer=answer)
@@ -196,7 +175,8 @@ def comments(request,question_id,answer_id):
 		except PageNotAnInteger:
 			comments = paginator.page(1)
 		except EmptyPage:
-			return HttpResponse()
+			data = {"result":"empty","content":""}
+			return HttpResponse(json.dumps(data))
 	context = {'comments':comments}
 	return render(request,'ask_app/commentitem.html',context)
 
@@ -217,6 +197,8 @@ def comment_item(request,q_id,a_ia,comment_id):
 			Comment.objects.remove(comment)
 			return HttpResponse()
 		else:
+			if not request.user.is_authenticated():
+				return HttpResponseRedirect(reverse('user_app:login'));
 			content = request.POST.get('content')
 			comment.content = content
 			comment.save()
@@ -227,7 +209,6 @@ def comment_item(request,q_id,a_ia,comment_id):
 
 @is_login
 def follow(request):
-	data = dict(result='ok',reason='ok')
 	follow_object = request.GET.get('object',None)
 	object_id = request.GET.get('id',None)
 	context = {}
@@ -240,7 +221,7 @@ def follow(request):
 				context = {'result':'unfollow'}
 			else:
 				request.user.follow_question.add(question)
-				context = {'result':'follow'}
+				context = {'result':'ok'}
 			
 		elif follow_object.lower() == 'topic':
 			topic = Topic.objects.get(pk=object_id)
@@ -250,7 +231,7 @@ def follow(request):
 				context = {'result':'unfollow'}
 			else:
 				request.user.follow_topic.add(follow_object)
-				context = {'result':"unfollow"}
+				context = {'result':"ok"}
 
 		elif follow_object.lower() == 'user':
 			anyaskuser = AnyaskUser.objects.get(pk=object_id)
@@ -260,7 +241,7 @@ def follow(request):
 				context = {'result':"unfollow"}
 			else:
 				request.user.follow_user.add(anyaskuser)
-				context = {'result':'follow'}
+				context = {'result':'ok'}
 		request.user.save()
 	return HttpResponse(json.dumps(context))
 
@@ -275,7 +256,7 @@ def favour(request,answer_id):
 	else:
 		request.user.favour_answer.add(answer)
 		request.user.save()
-		context = {'result':'favour'}
+		context = {'result':'ok'}
 	return HttpResponse(json.dumps(context))
 
 @is_login
@@ -312,9 +293,10 @@ def vote(request,answer_id):
 			answer.voteup -= 1
 			answer.save()
 	else:
-		HttpResponse(False)
-	result = {'data':answer.voteup}
-	return HttpResponse(json.dumps(result))
+		data = {"result":"error","content":""}
+		HttpResponse(json.dumps(data))
+	data = {'content':answer.voteup}
+	return HttpResponse(json.dumps(data))
 
 
 def search(request):

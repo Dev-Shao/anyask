@@ -1,13 +1,28 @@
 
 $(document).ready(function(){
+
+	function isJSON(data){  
+	    try {  
+	        $.parseJSON(data);  
+	    }
+	    catch (e) {  
+	        return false;  
+	    }  
+	    	return true;  
+	}
+
 	$("#loadButton").click(function(){
 		var temp = $(this);
 		var page = temp.attr("page");
 		var url = temp.attr("load");
 		$.get(url+page,function(data,status){
-			if(data == ''){
-				temp.text("全部已加载");
-				temp.attr("class","btn btn-default btn-block");
+			if(isJSON(data)){
+				var data = $.parseJSON(data);
+				if(data['result'] == 'empty'){
+					temp.html("全部已加载");
+					temp.attr("class","btn btn-default btn-block");
+					temp.attr('disabled',"disabled");
+				}
 			}
 			else{
 				$("#answerList").append(data);
@@ -23,7 +38,7 @@ $(document).ready(function(){
 				$('#myModal').modal();
 			}
 			else{
-				objtemp.parent().find("[voteupCount]").html(data['data']);
+				objtemp.parent().find("[voteupCount]").html(data['content']);
 			}
 			
 		});
@@ -32,7 +47,7 @@ $(document).ready(function(){
 	$("#answerList").on('click','[favour]',function(){
 		var objtemp = $(this);
 		$.getJSON(objtemp.attr('favour'),function(data,status){
-			if(data['result'] == 'favour'){
+			if(data['result'] == 'ok'){
 				objtemp.html("已收藏");
 			}
 			else if(data['result'] == 'unlogin'){
@@ -52,7 +67,7 @@ $(document).ready(function(){
 	$("[follow]").click(function(){
 		var temp = $(this);
 		$.getJSON(temp.attr("follow"),function(data,status){
-			if(data['result'] == 'follow'){
+			if(data['result'] == 'ok'){
 				temp.html("已关注");
 			}
 			else if(data['result'] == 'unlogin'){

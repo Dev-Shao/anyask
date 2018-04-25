@@ -5,3 +5,4 @@ ask_app/static
 ask_app/migrations
 user_app/migrations
 profile_app/migrations
+*.pyc
